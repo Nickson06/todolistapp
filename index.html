@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List App</title>
+    <style>
+        /* Styles for the app */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 10px;
+            background-color: #f2f2f2;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        /* Styles for completed tasks */
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+<!-- To-Do List Section -->
+<div class="container">
+    <h1>To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Enter task...">
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+    <div>
+        <button onclick="filterTasks('all')">All</button>
+        <button onclick="filterTasks('active')">Active</button>
+        <button onclick="filterTasks('completed')">Completed</button>
+        <button onclick="clearCompleted()">Clear Completed</button>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    // Array to store tasks
+    var tasks = [];
+
+    function addTask() {
+        var taskInput = document.getElementById("taskInput");
+        var taskList = document.getElementById("taskList");
+
+        // Create a new task object
+        var task = {
+            id: tasks.length + 1,
+            text: taskInput.value,
+            completed: false
+        };
+
+        // Add the task to the tasks array
+        tasks.push(task);
+
+        // Add the task to the task list
+        renderTask(task);
+
+        // Clear the input field
+        taskInput.value = "";
+    }
+
+    function renderTask(task) {
+        var taskList = document.getElementById("taskList");
+        var li = document.createElement("li");
+        li.textContent = task.text;
+        li.dataset.id = task.id;
+
+        if (task.completed) {
+            li.classList.add("completed");
+        }
+
+        // Toggle task completion on click
+        li.addEventListener("click", function () {
+            task.completed = !task.completed;
+            this.classList.toggle("completed");
+        });
+
+        taskList.appendChild(li);
+    }
+
+    function filterTasks(filter) {
+        var taskList = document.getElementById("taskList");
+        var lis = taskList.getElementsByTagName("li");
+
+        for (var i = 0; i < lis.length; i++) {
+            var li = lis[i];
+            var completed = li.classList.contains("completed");
+
+            switch (filter) {
+                case "all":
+                    li.style.display = "block";
+                    break;
+                case "active":
+                    li.style.display = completed ? "none" : "block";
+                    break;
+                case "completed":
+                    li.style.display = completed ? "block" : "none";
+                    break;
+            }
+        }
+    }
+
+    function clearCompleted() {
+        tasks = tasks.filter(function (task) {
+            return !task.completed;
+        });
+
+        var taskList = document.getElementById("taskList");
+        taskList.innerHTML = "";
+
+        tasks.forEach(function (task) {
+            renderTask(task);
+        });
+    }
+</script>
+
+</body>
+</html>
+
